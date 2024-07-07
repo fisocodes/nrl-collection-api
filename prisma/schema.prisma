@@ -20,11 +20,9 @@ model User{
 	createDate DateTime @default(now()) @map("create_date")
 	updateDate DateTime @updatedAt() @map("update_date")
 
-	role String @default("user")
+	role String @default("USER")
 	email String @unique()
 	username String @unique()
-	firstName String @map("first_name")
-	lastName String @map("last_name")
 	password String
 
 }
