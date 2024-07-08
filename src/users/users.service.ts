@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { Prisma, User } from '@prisma/client'
 import { hash } from 'bcrypt'
@@ -62,10 +62,33 @@ export class UsersService
         return foundUser
     }
 
-    //TODO Implement this method
-    async readMany( args: Prisma.UserFindManyArgs ): Promise<User[]>
+
+    async readMany( page: number = 1, perPage: number = 10, order: string = 'createDate:desc', filter: string | undefined ): Promise<User[]>
     {
-        return await this.prisma.user.findMany( args )
+        const orderBy = order.split( ',' ).map( str =>
+        {
+            return { [ str.split( ':' )[ 0 ] ]: str.split( ':' )[ 1 ] }
+        } )
+
+        const where = filter?.split( ',' ).reduce( ( acc: any, current: string ) =>
+        {
+            if( !acc[ current.split( '.' )[ 0 ] ] )
+            {
+                acc[ current.split( '.' )[ 0 ] ] = {}
+            }
+
+            acc[ current.split( '.' )[ 0 ] ][ current.split( '.' )[ 1 ] ] = current.split( '.' )[ 2 ]
+            return acc
+        }, {} )
+
+        console.log( orderBy, where )
+
+        return await this.prisma.user.findMany( {
+            take: perPage,
+            skip: ( page - 1 ) * perPage,
+            orderBy,
+            where
+        } )
     }
 
     async update( idOrEmailOrUsername: string, data: Prisma.UserUpdateInput ): Promise<User>

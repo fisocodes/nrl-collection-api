@@ -18,7 +18,7 @@ model User{
 
 	id String @id() @default(cuid())
 	createDate DateTime @default(now()) @map("create_date")
-	updateDate DateTime @updatedAt() @map("update_date")
+	modifiedDate DateTime @updatedAt() @map("modified_date")
 
 	role String @default("USER")
 	email String @unique()
