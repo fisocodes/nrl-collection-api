@@ -5,6 +5,7 @@ import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { PasswordConfirmationPipe } from './pipes/password-confirmation.pipe'
 import { EmailConfirmationPipe } from './pipes/email-confirmation.pipe'
 import { FilterQueryPipe } from './pipes/filter-query.pipe'
+import { OrderQueryPipe } from './pipes/order-query.pipe'
 
 @ApiTags( 'users' )
 @Controller( 'users' )
@@ -26,8 +27,9 @@ export class UsersController
 
     //TODO Implement implement pipes to validate queries
     @ApiQuery( { name: 'filter', required: false } )
+    @ApiQuery( { name: 'order', required: false } )
     @Get()
-    async readMany( @Query( 'filter', new FilterQueryPipe() ) filter?: string )
+    async readMany( @Query( 'filter', new FilterQueryPipe() ) filter?: string, @Query( 'order', new OrderQueryPipe() ) order?: string )
     {
         return 'Users'
     }
