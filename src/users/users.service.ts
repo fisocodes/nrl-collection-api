@@ -63,7 +63,7 @@ export class UsersService
     }
 
 
-    async readMany( page: number = 1, perPage: number = 10, order: string = 'createDate:desc', filter: string | undefined ): Promise<User[]>
+    async readMany( page: number, perPage: number, order: string, filter: string | undefined ): Promise<User[]>
     {
         const orderBy = order.split( ',' ).map( str =>
         {

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { ApiQuery, ApiTags } from '@nestjs/swagger'
@@ -14,28 +14,40 @@ export class UsersController
     constructor( private usersService: UsersService ) {}
 
     @Post()
-    async create( @Body( new EmailConfirmationPipe(), new PasswordConfirmationPipe() ) createUserDto: CreateUserDto )
+    async create(
+        @Body( new EmailConfirmationPipe(), new PasswordConfirmationPipe() ) createUserDto: CreateUserDto
+    )
     {
         return 'Users'
     }
 
     @Get( ':idOrEmailOrUsername' )
-    readOne( @Param( 'idOrEmailOrUsername' ) idOrEmailOrUsername: string )
+    readOne(
+        @Param( 'idOrEmailOrUsername' ) idOrEmailOrUsername: string
+    )
     {
         return 'Users'
     }
 
-    //TODO Implement implement pipes to validate queries
     @ApiQuery( { name: 'filter', required: false } )
     @ApiQuery( { name: 'order', required: false } )
+    @ApiQuery( { name: 'page', required: false } )
+    @ApiQuery( { name: 'perPage', required: false } )
     @Get()
-    async readMany( @Query( 'filter', new FilterQueryPipe() ) filter?: string, @Query( 'order', new OrderQueryPipe() ) order?: string )
+    async readMany(
+        @Query( 'page', new DefaultValuePipe( 1 ), new ParseIntPipe() ) page: number,
+        @Query( 'perPage', new DefaultValuePipe( 10 ), new ParseIntPipe() ) perPage: number,
+        @Query( 'filter', new DefaultValuePipe( '' ), new FilterQueryPipe() ) filter: string,
+        @Query( 'order', new DefaultValuePipe( 'createDate:desc' ), new OrderQueryPipe() ) order: string
+    )
     {
         return 'Users'
     }
 
     @Delete( ':idOrEmailOrUsername' )
-    delete( @Param( 'idOrEmailOrUsername' ) idOrEmailOrUsername: string )
+    delete(
+        @Param( 'idOrEmailOrUsername' ) idOrEmailOrUsername: string
+    )
     {
         return 'Users'
     }
