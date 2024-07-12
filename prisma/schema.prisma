@@ -12,13 +12,13 @@ datasource db {
 
 }
 
-model User{
+model User {
 
 	@@map("users")
 
 	id String @id() @default(cuid())
 	createDate DateTime @default(now()) @map("create_date")
-	modifiedDate DateTime @updatedAt() @map("modified_date")
+	updateDate DateTime @updatedAt() @map("update_date")
 
 	role String @default("USER")
 	email String @unique()

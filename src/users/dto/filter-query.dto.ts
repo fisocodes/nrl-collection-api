@@ -9,10 +9,10 @@ export class FilterQueryDto implements Omit<User, 'id' | 'password'>
     @IsOptional()
     createDate: Date
 
-    @IsDate( { message: 'modifiedDate is not valid' } )
+    @IsDate( { message: 'updateDate is not valid' } )
     @Type( () => Date )
     @IsOptional()
-    modifiedDate: Date
+    updateDate: Date
 
     @IsString()
     @IsOptional()

@@ -7,7 +7,7 @@ export class OrderQueryDto implements Omit<User, 'id' | 'password'>
     createDate: Date
 
     @IsOptional()
-    modifiedDate: Date
+    updateDate: Date
 
     @IsOptional()
     role: string
