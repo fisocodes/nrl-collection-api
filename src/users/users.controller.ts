@@ -22,8 +22,13 @@ export class UsersController
         this.nodemailerService.transporter.sendMail( {
             from: 'NRL COLLECTION',
             to: createUserDto.email,
-            subject: 'Account created in NRL COLLECTION',
-            text: 'You created an account for NRL COLLECTION. Now you can use the API'
+            subject: 'NRL Collection email confirmation',
+            html: `
+                <p> Thank you for signin up on NRL Collection</p>
+                <p>In order to use the API you need to confirm your email</p>
+                <p>Click in the link below to confirm your email</p>
+                <p>If you did not sign up to NRL Collection you can just ignore this email</p>
+            `
         } )
         return 'Users'
     }

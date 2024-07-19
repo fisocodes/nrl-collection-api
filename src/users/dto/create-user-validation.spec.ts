@@ -84,8 +84,6 @@ describe( 'Validation pipe for CreateUserDto', () =>
                     username: faker.internet.userName()
                 }
 
-                console.log( body )
-
                 const returnedBody = await createUserValidationPipe.transform( body, metadata )
 
                 expect( returnedBody ).toEqual( body )
