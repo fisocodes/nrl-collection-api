@@ -15,6 +15,7 @@
 	"author": "Oscar Figueroa",
 	"license": "ISC",
 	"devDependencies": {
+		"@faker-js/faker": "^8.4.1",
 		"@nestjs/testing": "^10.3.10",
 		"@types/bcrypt": "^5.0.2",
 		"@types/jest": "^29.5.12",

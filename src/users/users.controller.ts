@@ -6,18 +6,25 @@ import { PasswordConfirmationPipe } from './pipes/password-confirmation.pipe'
 import { EmailConfirmationPipe } from './pipes/email-confirmation.pipe'
 import { FilterQueryPipe } from './pipes/filter-query.pipe'
 import { OrderQueryPipe } from './pipes/order-query.pipe'
+import { NodemailerService } from '../nodemailer.service'
 
 @ApiTags( 'users' )
 @Controller( 'users' )
 export class UsersController
 {
-    constructor( private usersService: UsersService ) {}
+    constructor( private usersService: UsersService, private nodemailerService: NodemailerService ) {}
 
     @Post()
     async create(
         @Body( new EmailConfirmationPipe(), new PasswordConfirmationPipe() ) createUserDto: CreateUserDto
     )
     {
+        this.nodemailerService.transporter.sendMail( {
+            from: 'NRL COLLECTION',
+            to: createUserDto.email,
+            subject: 'Account created in NRL COLLECTION',
+            text: 'You created an account for NRL COLLECTION. Now you can use the API'
+        } )
         return 'Users'
     }
 

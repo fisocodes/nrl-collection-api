@@ -1,5 +1,6 @@
 import { ArgumentMetadata, ValidationPipe } from '@nestjs/common'
 import { CreateUserDto } from './create-user.dto'
+import { faker } from '@faker-js/faker'
 
 describe( 'Validation pipe for CreateUserDto', () =>
 {
@@ -72,13 +73,18 @@ describe( 'Validation pipe for CreateUserDto', () =>
         {
             it( 'should return the body unchanged when it is valid', async () =>
             {
+                const email = faker.internet.email()
+                const password = faker.internet.password( { length: 8 } ) + "#$%&"
+
                 const body: CreateUserDto = {
-                    confirmEmail: 'asdf@asdf.asdf',
-                    confirmPassword: 'Abc123#!',
-                    email: 'asdf@asdf.asdf',
-                    password: 'Abc123#!',
-                    username: 'userson'
+                    confirmEmail: email,
+                    confirmPassword: password,
+                    email,
+                    password,
+                    username: faker.internet.userName()
                 }
+
+                console.log( body )
 
                 const returnedBody = await createUserValidationPipe.transform( body, metadata )
 
