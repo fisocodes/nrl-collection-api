@@ -8,7 +8,7 @@ generator client {
 datasource db {
 
 	provider = "sqlite"
-	url      = env("DATABASE_URL")
+	url = env("DATABASE_URL")
 
 }
 
@@ -22,6 +22,7 @@ model User {
 
 	role String @default("USER")
 	email String @unique()
+	isEmailVerified Boolean @default(false) @map("is_email_verified")
 	username String @unique()
 	password String
 

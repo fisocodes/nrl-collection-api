@@ -2,7 +2,7 @@ import { User } from '@prisma/client'
 import { Type } from 'class-transformer'
 import { IsDate, IsEmail, IsOptional, IsString } from 'class-validator'
 
-export class FilterQueryDto implements Omit<User, 'id' | 'password'>
+export class FilterQueryDto implements Omit<User, 'id' | 'password' | 'isEmailVerified'>
 {
     @IsDate( { message: 'createDate is not valid' } )
     @Type( () => Date )

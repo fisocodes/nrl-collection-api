@@ -31,4 +31,51 @@ export class NodemailerService implements OnModuleInit
         }
         this.transporter = createTransport( transportOptions )
     }
+
+    async sendVerificationEmail( to: string, emailVerificationToken: string )
+    {
+        await this.transporter.sendMail( {
+            from: 'NRL Collection API',
+            to,
+            subject: 'Email verification',
+            html: `
+            <style>
+                header {
+                    padding: 1.5rem;
+                    background-color: limegreen;
+                    font-size: larger;
+                    color: white;
+                }
+
+                section {
+                    padding: 1.5rem;
+                }
+
+                footer {
+                    padding: 1.5rem;
+                    background-color: limegreen;
+                    font-size: larger;
+                    color: white;
+                    display: flex;
+                    justify-content: center;
+                }
+            </style>
+            <header>NRL Collection API</header>
+            <section>Welcome to NRL Collection API!</section>
+            <section>
+                In order to use the API you need to verify your account. Click the
+                link below to verify your account.
+            </section>
+            <section>
+                <a href="${process.env.API_URL}/auth/verify-email?token=${emailVerificationToken}"
+                    >Verify your NRL Collection account</a
+                >
+            </section>
+            <section>
+                You can safely ignore this email if you did not create an account on
+                NRL Collection.
+            </section>
+            <footer>NRL Collection</footer>`
+        } )
+    }
 }

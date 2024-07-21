@@ -1,7 +1,7 @@
 import { User } from '@prisma/client'
 import { IsOptional } from 'class-validator'
 
-export class OrderQueryDto implements Omit<User, 'id' | 'password'>
+export class OrderQueryDto implements Omit<User, 'id' | 'password' | 'isEmailVerified'>
 {
     @IsOptional()
     createDate: Date

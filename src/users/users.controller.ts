@@ -7,30 +7,32 @@ import { EmailConfirmationPipe } from './pipes/email-confirmation.pipe'
 import { FilterQueryPipe } from './pipes/filter-query.pipe'
 import { OrderQueryPipe } from './pipes/order-query.pipe'
 import { NodemailerService } from '../nodemailer.service'
+import { User } from '@prisma/client'
+import { hash } from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
 
 @ApiTags( 'users' )
 @Controller( 'users' )
 export class UsersController
 {
-    constructor( private usersService: UsersService, private nodemailerService: NodemailerService ) {}
+    constructor( private usersService: UsersService, private jwtService: JwtService, private nodemailerService: NodemailerService ) {}
 
     @Post()
     async create(
         @Body( new EmailConfirmationPipe(), new PasswordConfirmationPipe() ) createUserDto: CreateUserDto
-    )
+    ): Promise<User>
     {
-        this.nodemailerService.transporter.sendMail( {
-            from: 'NRL COLLECTION',
-            to: createUserDto.email,
-            subject: 'NRL Collection email confirmation',
-            html: `
-                <p> Thank you for signin up on NRL Collection</p>
-                <p>In order to use the API you need to confirm your email</p>
-                <p>Click in the link below to confirm your email</p>
-                <p>If you did not sign up to NRL Collection you can just ignore this email</p>
-            `
+        const createdUser: User = await this.usersService.create( {
+            email: createUserDto.email,
+            password: await hash( createUserDto.password, 12 ),
+            username: createUserDto.username
         } )
-        return 'Users'
+
+        const emailVerificationToken = await this.jwtService.signAsync( { sub: createdUser.id } )
+
+        await this.nodemailerService.sendVerificationEmail( createdUser.email, emailVerificationToken )
+
+        return createdUser
     }
 
     @Get( ':idOrEmailOrUsername' )
