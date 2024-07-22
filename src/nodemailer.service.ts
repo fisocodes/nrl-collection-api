@@ -67,7 +67,7 @@ export class NodemailerService implements OnModuleInit
                 link below to verify your account.
             </section>
             <section>
-                <a href="${process.env.API_URL}/auth/verify-email?token=${emailVerificationToken}"
+                <a href="${process.env.API_URL}/auth/verify-email?emailVerificationToken=${emailVerificationToken}"
                     >Verify your NRL Collection account</a
                 >
             </section>
