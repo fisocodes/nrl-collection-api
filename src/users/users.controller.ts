@@ -8,7 +8,6 @@ import { FilterQueryPipe } from './pipes/filter-query.pipe'
 import { OrderQueryPipe } from './pipes/order-query.pipe'
 import { NodemailerService } from '../nodemailer.service'
 import { User } from '@prisma/client'
-import { hash } from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
 
 @ApiTags( 'users' )
@@ -24,7 +23,7 @@ export class UsersController
     {
         const createdUser: User = await this.usersService.create( {
             email: createUserDto.email,
-            password: await hash( createUserDto.password, 12 ),
+            password: createUserDto.password,
             username: createUserDto.username
         } )
 

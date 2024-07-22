@@ -1,40 +1,26 @@
-import { Get, Controller, Query, UnauthorizedException, ConflictException } from '@nestjs/common'
+import { Get, Controller, Query, Post, Body } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { JwtService } from '@nestjs/jwt'
-import { UsersService } from '../users/users.service'
 import { User } from '@prisma/client'
+import { AuthService } from './auth.service'
+import { SignInDto } from './dto/signin.dto'
 
 @ApiTags( 'auth' )
 @Controller( 'auth' )
 export class AuthController
 {
-    constructor( private jwtService: JwtService, private usersService: UsersService ) {}
+    constructor( private authService: AuthService ) {}
 
     @Get( '/verify-email' )
     async verifyEmail(
         @Query( 'emailVerificationToken' ) emailVerificationToken: string
     ): Promise<User>
     {
-        try
-        {
-            await this.jwtService.verifyAsync( emailVerificationToken )
-            const { sub: userId } = this.jwtService.decode( emailVerificationToken )
+        return this.authService.verifyEmail( emailVerificationToken )
+    }
 
-            const { isEmailVerified } = await this.usersService.readOne( userId )
-
-            if( isEmailVerified )
-                throw new ConflictException( 'Email already verified' )
-
-            const updatedUser = await this.usersService.update( userId, {
-                isEmailVerified: true
-            } )
-
-            return updatedUser
-        }
-        catch( e: any )
-        {
-            console.log( e.message )
-            throw new UnauthorizedException( e.message )
-        }
+    @Post( '/sign-in' )
+    async signIn( @Body() body: SignInDto ): Promise<{ access_token: string }>
+    {
+        return await this.authService.signIn( body.usernameOrEmail, body.password )
     }
 }

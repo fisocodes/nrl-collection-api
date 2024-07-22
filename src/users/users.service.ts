@@ -33,7 +33,7 @@ export class UsersService
             data: {
                 ...data,
                 id: this.nanoId.createId(),
-                password: await hash( data.password, 12 )
+                password: await hash( data.password, 10 )
             }
         } )
     }
