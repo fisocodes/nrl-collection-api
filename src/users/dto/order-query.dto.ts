@@ -18,9 +18,3 @@ export class OrderQueryDto implements Omit<User, 'id' | 'password' | 'isEmailVer
     @IsOptional()
     username: string
 }
-
-// @ApiPropertyOptional()
-// @Matches( /^(\w+:((asc)|(desc)))((,\w+:((asc)|(desc))))*$/g )
-// @IsString()
-// @IsOptional()
-// order: string | undefined

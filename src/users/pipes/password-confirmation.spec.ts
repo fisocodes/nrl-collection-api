@@ -3,7 +3,7 @@ import { CreateUserDto } from '../dto/create-user.dto'
 import { faker } from '@faker-js/faker'
 import { BadRequestException } from '@nestjs/common'
 
-describe( 'Password confirmation pipe', () =>
+describe( 'USERS password confirmation pipe', () =>
 {
     const passwordConfirmationPipe = new PasswordConfirmationPipe()
 

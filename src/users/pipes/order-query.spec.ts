@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common'
 import { OrderQueryPipe } from './order-query.pipe'
 
-describe( 'User order query', () =>
+describe( 'USERS order query pipe', () =>
 {
     const orderQueryPipe = new OrderQueryPipe()
 

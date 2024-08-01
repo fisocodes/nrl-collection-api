@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common'
 import { FilterQueryPipe } from './filter-query.pipe'
 
-describe( 'User filter query ', () =>
+describe( 'USERS filter query pipe', () =>
 {
     const filterQueryPipe = new FilterQueryPipe()
     describe( 'transform', () =>
