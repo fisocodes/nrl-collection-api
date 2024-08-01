@@ -1,5 +1,7 @@
 import { PasswordConfirmationPipe } from './password-confirmation.pipe'
 import { CreateUserDto } from '../dto/create-user.dto'
+import { faker } from '@faker-js/faker'
+import { BadRequestException } from '@nestjs/common'
 
 describe( 'Password confirmation pipe', () =>
 {
@@ -12,20 +14,14 @@ describe( 'Password confirmation pipe', () =>
             it( 'should throw an error when password and confirmPassword are different', () =>
             {
                 const body: CreateUserDto = {
-                    confirmEmail: 'asdf@asdf.asdf',
-                    confirmPassword: 'ABCedf123&',
-                    email: 'qwer@qwer.qwer',
-                    password: 'ABCedf123#',
-                    username: 'user'
+                    confirmEmail: faker.internet.email(),
+                    confirmPassword: faker.internet.password( { length: 8 } ) + "#$%&",
+                    email: faker.internet.email(),
+                    password: faker.internet.password( { length: 8 } ) + "#$%&",
+                    username: faker.internet.userName()
                 }
 
-                try
-                {
-                    passwordConfirmationPipe.transform( body )
-                } catch( e: any )
-                {
-                    expect( e.response.message ).toEqual( 'password and confirmPassword do not match' )
-                }
+                expect( () => passwordConfirmationPipe.transform( body ) ).toThrow( BadRequestException )
             } )
         } )
 
@@ -33,16 +29,17 @@ describe( 'Password confirmation pipe', () =>
         {
             it( 'should return the body unchanged when password and confirmPassword are equal', () =>
             {
+                const password = faker.internet.password( { length: 8 } ) + "#$%&"
+
                 const body: CreateUserDto = {
-                    confirmEmail: 'asdf@asdf.asdf',
-                    confirmPassword: 'Abc123#!',
-                    email: 'asdf@asdf.asdf',
-                    password: 'Abc123#!',
-                    username: 'userson'
+                    confirmEmail: faker.internet.email(),
+                    confirmPassword: password,
+                    email: faker.internet.email(),
+                    password,
+                    username: faker.internet.userName()
                 }
 
                 const returnedBody = passwordConfirmationPipe.transform( body )
-
                 expect( returnedBody ).toEqual( body )
             } )
         } )

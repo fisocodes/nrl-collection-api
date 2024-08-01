@@ -1,5 +1,7 @@
 import { EmailConfirmationPipe } from './email-confirmation.pipe'
 import { CreateUserDto } from '../dto/create-user.dto'
+import { faker } from '@faker-js/faker'
+import { BadRequestException } from '@nestjs/common'
 
 describe( 'Email confirmation pipe', () =>
 {
@@ -12,20 +14,14 @@ describe( 'Email confirmation pipe', () =>
             it( 'should throw an error when email and confirmEmail are different', () =>
             {
                 const body: CreateUserDto = {
-                    confirmEmail: 'asdf@asdf.asdf',
-                    confirmPassword: 'ABCedf123#',
-                    email: 'qwer@qwer.qwer',
-                    password: 'ABCedf123#',
-                    username: 'user'
+                    confirmEmail: faker.internet.email(),
+                    confirmPassword: faker.internet.password(),
+                    email: faker.internet.email(),
+                    password: faker.internet.password(),
+                    username: faker.internet.userName()
                 }
 
-                try
-                {
-                    emailConfirmationPipe.transform( body )
-                } catch( e: any )
-                {
-                    expect( e.response.message ).toEqual( 'email and confirmEmail do not match' )
-                }
+                expect( () => emailConfirmationPipe.transform( body ) ).toThrow( BadRequestException )
             } )
         } )
 
@@ -33,16 +29,17 @@ describe( 'Email confirmation pipe', () =>
         {
             it( 'should return the body unchanged when email and confirmEmail are equal', () =>
             {
+                const email = faker.internet.email()
+
                 const body: CreateUserDto = {
-                    confirmEmail: 'asdf@asdf.asdf',
-                    confirmPassword: 'Abc123#!',
-                    email: 'asdf@asdf.asdf',
-                    password: 'Abc123#!',
-                    username: 'userson'
+                    confirmEmail: email,
+                    confirmPassword: faker.internet.password(),
+                    email,
+                    password: faker.internet.password(),
+                    username: faker.internet.userName()
                 }
 
                 const returnedBody = emailConfirmationPipe.transform( body )
-
                 expect( returnedBody ).toEqual( body )
             } )
         } )
