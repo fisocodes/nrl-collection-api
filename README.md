@@ -1,7 +1,23 @@
 # NRL Collection API
 
-NRL Collection API is intended to provide data about the NRL competition which
-could include seasons, teams, matches, fixtures, statistics, etc.
+NRL Collection API is intended to provide an easy and open access to data about
+the NRL competition through an REST API which could include seasons, teams,
+matches, fixtures, statistics, etc.
+
+### Motivation
+
+Currently there are several sources where NRL competition data is publicly
+available, some examples are:
+
+-   [The official website of the National Rugby League] (https://www.nrl.com/)
+-   [Rugby League Project] (https://www.rugbyleagueproject.org/)
+-   And some other projects which got lost in search engines.
+
+The problem with this platforms is that the information is complicated to
+access. For example, if someone wants to run some statistics, train AI models,
+or make visualization tools, they would have to scrape all data through the
+different platforms. So the NRL Collection API tries to solve this problem by
+providing an open platform where all this information can be consulted easily.
 
 ## Contributing
 
