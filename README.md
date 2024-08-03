@@ -55,7 +55,9 @@ To see the OpenAPI specification go to: http://localhost:3000/api
     - [x] Email confirmation flow.
     - [ ] Reset password flow.
     - [ ] Delete account implementation.
+    - [ ] Implement unit tests.
 
 2. Authentication module.
     - [x] Generate JWT.
     - [ ] Protect routes.
+    - [ ] Implement unit tests.
