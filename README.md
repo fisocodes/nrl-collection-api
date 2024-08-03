@@ -9,8 +9,8 @@ matches, fixtures, statistics, etc.
 Currently there are several sources where NRL competition data is publicly
 available, some examples are:
 
--   [The official website of the National Rugby League] (https://www.nrl.com/)
--   [Rugby League Project] (https://www.rugbyleagueproject.org/)
+-   [The official website of the National Rugby League](https://www.nrl.com/)
+-   [Rugby League Project](https://www.rugbyleagueproject.org/)
 -   And some other projects which got lost in search engines.
 
 The problem with this platforms is that the information is complicated to
