@@ -22,7 +22,7 @@ providing an open platform where all this information can be consulted easily.
 ## Contributing
 
 For now the project is in a very early development stage. If you would like to
-contribute to the project do not hesitate in creating an issue or a pull
+contribute to the project do not hesitate in creating an issue or making a pull
 request.
 
 ## Installation
