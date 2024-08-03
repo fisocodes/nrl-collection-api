@@ -34,6 +34,23 @@ export class AuthService
         }
     }
 
+    async resetPassword( resetPasswordToken: string, password: string )
+    {
+        try
+        {
+            await this.jwtService.verifyAsync( resetPasswordToken )
+            const { sub: userId } = this.jwtService.decode( resetPasswordToken )
+
+            const updatedUser = await this.usersService.updatePassword( userId, password )
+
+            return updatedUser
+        } catch( e: any )
+        {
+            console.log( e.message )
+            throw new UnauthorizedException( e.message )
+        }
+    }
+
     async signIn( usernameOrEmail: string, password: string ): Promise<{ access_token: string }>
     {
         const foundUser = await this.usersService.readOne( usernameOrEmail )

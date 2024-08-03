@@ -6,6 +6,8 @@ import { SignInDto } from './dto/signin.dto'
 import { UsersService } from '../users/users.service'
 import { NodemailerService } from '../nodemailer.service'
 import { JwtService } from '@nestjs/jwt'
+import { ResetPasswordDto } from './dto/reset-password.dto'
+import { PasswordConfirmationPipe } from '../users/pipes/password-confirmation.pipe'
 
 @ApiTags( 'auth' )
 @Controller( 'auth' )
@@ -41,6 +43,15 @@ export class AuthController
         await this.nodemailerService.sendVerificationEmail( foundUser.email, emailVerificationToken )
 
         return foundUser
+    }
+
+    @Post( 'reset-password' )
+    async resetPassword(
+        @Query( 'passwordResetToken' ) passwordResetToken: string,
+        @Body( new PasswordConfirmationPipe() ) body: ResetPasswordDto
+    )
+    {
+        this.authService.resetPassword( passwordResetToken, body.password )
     }
 
     @Post( '/sign-in' )
