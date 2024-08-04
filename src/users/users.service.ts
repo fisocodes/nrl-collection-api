@@ -11,38 +11,34 @@ export class UsersService
 
     async findUser( idOrEmailOrUsername: string ): Promise<User>
     {
-        try
-        {
-            const foundUser = await this.prisma.user.findFirstOrThrow( {
-                where: {
-                    OR: [
-                        {
-                            id: { equals: idOrEmailOrUsername }
-                        },
-                        {
-                            email: { equals: idOrEmailOrUsername }
-                        },
-                        {
-                            username: { equals: idOrEmailOrUsername }
-                        }
-                    ]
-                }
-            } )
+        const foundUser = await this.prisma.user.findFirst( {
+            where: {
+                OR: [
+                    {
+                        id: { equals: idOrEmailOrUsername }
+                    },
+                    {
+                        email: { equals: idOrEmailOrUsername }
+                    },
+                    {
+                        username: { equals: idOrEmailOrUsername }
+                    }
+                ]
+            }
+        } )
 
-            return foundUser
-        } catch( e )
-        {
+        if( !foundUser )
             throw new NotFoundException()
-        }
-    }
 
+        return foundUser
+    }
 
     async create( data: Prisma.UserCreateInput ): Promise<User>
     {
-        if( !await this.findUser( data.email ) )
+        if( await this.prisma.user.findFirst( { where: { email: data.email } } ) )
             throw new ConflictException( 'An account with that email already exists' )
 
-        if( !await this.findUser( data.username ) )
+        if( await this.prisma.user.findFirst( { where: { username: data.username } } ) )
             throw new ConflictException( 'Username already taken' )
 
         return await this.prisma.user.create( {
@@ -59,32 +55,37 @@ export class UsersService
         return await this.findUser( idOrEmailOrUsername )
     }
 
-
-    async readMany( page: number, perPage: number, order: string, filter: string | undefined ): Promise<User[]>
+    mapOrders( orders: string ): Prisma.UserOrderByWithAggregationInput[]
     {
-        const orderBy = order.split( ',' ).map( str =>
+        return orders.split( ',' ).map( order =>
         {
-            const [ property, order ] = str.split( ':' )
-            return { [ property ]: order }
+            const [ property, direction ] = order.split( ':' ) as [ Prisma.UserScalarFieldEnum, Prisma.SortOrder ]
+            return { [ property ]: direction }
         } )
+    }
 
-        const where = filter?.split( ',' ).reduce( ( whereAccumulator: any, filter: string ) =>
+    mapFilters( filters?: string ): Prisma.UserWhereInput
+    {
+        return filters?.split( ',' ).reduce( ( whereAccumulator: any, filter: string ) =>
         {
-            const [ property, operator, value ] = filter.split( '.' )
+            const [ property, operator, value ] = filter.split( '.' ) as [ Prisma.UserScalarFieldEnum, 'equals' | 'not' | 'lt' | 'lte' | 'gt' | 'gte', string | number ]
 
             if( !whereAccumulator[ property ] )
                 whereAccumulator[ property ] = {}
 
-            whereAccumulator[ property ][ operator ] = value
+            whereAccumulator[ property ][ operator ] = Number.isNaN( value ) ? value : Number( value )
 
             return whereAccumulator
         }, {} )
+    }
 
+    async readMany( page: number, perPage: number, orders: string, filters: string | undefined ): Promise<User[]>
+    {
         return await this.prisma.user.findMany( {
             take: perPage,
             skip: ( page - 1 ) * perPage,
-            orderBy,
-            where
+            orderBy: this.mapOrders( orders ),
+            where: this.mapFilters( filters )
         } )
     }
 

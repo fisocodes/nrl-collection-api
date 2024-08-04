@@ -33,6 +33,7 @@ describe( 'USERS service', () =>
         {
             it( 'it should throw error when user already exists', async () =>
             {
+                prismaServiceMock.user.findFirst.mockResolvedValue( mockUser() )
                 await expect( usersService.create( mockUser() ) ).rejects.toThrow( ConflictException )
             } )
         } )
@@ -41,7 +42,7 @@ describe( 'USERS service', () =>
         {
             it( 'should return the created user', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockResolvedValue( mockUser() )
+                prismaServiceMock.user.findFirst.mockResolvedValue( null )
                 prismaServiceMock.user.create.mockResolvedValue( mockUser() )
 
                 await expect( usersService.create( mockUser() ) ).resolves.toBeDefined()
@@ -55,7 +56,7 @@ describe( 'USERS service', () =>
         {
             it( 'should throw an error when user not found', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockImplementation( () => { throw new Error() } )
+                prismaServiceMock.user.findFirst.mockResolvedValue( null )
                 await expect( usersService.readOne( faker.string.alphanumeric( 10 ) ) ).rejects.toThrow( NotFoundException )
             } )
         } )
@@ -64,7 +65,7 @@ describe( 'USERS service', () =>
         {
             it( 'should return an user', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockResolvedValue( mockUser() )
+                prismaServiceMock.user.findFirst.mockResolvedValue( mockUser() )
                 await expect( usersService.readOne( faker.string.alphanumeric( 10 ) ) ).resolves.toBeDefined()
             } )
         } )
@@ -85,7 +86,7 @@ describe( 'USERS service', () =>
         {
             it( 'should throw an error when user not found', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockImplementation( () => { throw new Error() } )
+                prismaServiceMock.user.findFirst.mockResolvedValue( null )
                 await expect( usersService.update( faker.internet.email(), mockUser() ) ).rejects.toThrow( NotFoundException )
             } )
         } )
@@ -94,7 +95,7 @@ describe( 'USERS service', () =>
         {
             it( 'should return updated user', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockResolvedValue( mockUser() )
+                prismaServiceMock.user.findFirst.mockResolvedValue( mockUser() )
                 prismaServiceMock.user.update.mockResolvedValue( mockUser() )
                 await expect( usersService.update( faker.internet.email(), mockUser() ) ).resolves.toBeDefined()
             } )
@@ -107,7 +108,7 @@ describe( 'USERS service', () =>
         {
             it( 'should throw an error when user not found', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockImplementation( () => { throw new Error() } )
+                prismaServiceMock.user.findFirst.mockResolvedValue( null )
                 await expect( usersService.updatePassword( faker.internet.email(), faker.string.alphanumeric( 8 ) ) ).rejects.toThrow( NotFoundException )
             } )
         } )
@@ -116,7 +117,7 @@ describe( 'USERS service', () =>
         {
             it( 'should return updated user', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockResolvedValue( mockUser() )
+                prismaServiceMock.user.findFirst.mockResolvedValue( mockUser() )
                 prismaServiceMock.user.update.mockResolvedValue( mockUser() )
                 await expect( usersService.updatePassword( faker.internet.email(), faker.string.alphanumeric( 8 ) ) ).resolves.toBeDefined()
             } )
@@ -129,7 +130,7 @@ describe( 'USERS service', () =>
         {
             it( 'should throw an error when user not found', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockImplementation( () => { throw new Error() } )
+                prismaServiceMock.user.findFirst.mockResolvedValue( null )
                 await expect( usersService.delete( faker.internet.email() ) ).rejects.toThrow( NotFoundException )
             } )
         } )
@@ -138,7 +139,7 @@ describe( 'USERS service', () =>
         {
             it( 'should return deleted user', async () =>
             {
-                prismaServiceMock.user.findFirstOrThrow.mockResolvedValue( mockUser() )
+                prismaServiceMock.user.findFirst.mockResolvedValue( mockUser() )
                 prismaServiceMock.user.delete.mockResolvedValue( mockUser() )
                 await expect( usersService.delete( faker.internet.email() ) ).resolves.toBeDefined()
             } )
