@@ -9,31 +9,40 @@ export class UsersService
 {
     constructor( private prisma: PrismaService, private nanoId: NanoIdService ) {}
 
-    async findUserByIdOrEmailOrUsername( idOrEmailOrUsername: string ): Promise<User | null>
+    async findUser( idOrEmailOrUsername: string ): Promise<User>
     {
-        return await this.prisma.user.findFirst( {
-            where: {
-                OR: [
-                    {
-                        id: { equals: idOrEmailOrUsername }
-                    },
-                    {
-                        email: { equals: idOrEmailOrUsername }
-                    },
-                    {
-                        username: { equals: idOrEmailOrUsername }
-                    }
-                ]
-            }
-        } )
+        try
+        {
+            const foundUser = await this.prisma.user.findFirstOrThrow( {
+                where: {
+                    OR: [
+                        {
+                            id: { equals: idOrEmailOrUsername }
+                        },
+                        {
+                            email: { equals: idOrEmailOrUsername }
+                        },
+                        {
+                            username: { equals: idOrEmailOrUsername }
+                        }
+                    ]
+                }
+            } )
+
+            return foundUser
+        } catch( e )
+        {
+            throw new NotFoundException()
+        }
     }
+
 
     async create( data: Prisma.UserCreateInput ): Promise<User>
     {
-        if( await this.findUserByIdOrEmailOrUsername( data.email ) )
+        if( !await this.findUser( data.email ) )
             throw new ConflictException( 'An account with that email already exists' )
 
-        if( await this.findUserByIdOrEmailOrUsername( data.username ) )
+        if( !await this.findUser( data.username ) )
             throw new ConflictException( 'Username already taken' )
 
         return await this.prisma.user.create( {
@@ -47,12 +56,7 @@ export class UsersService
 
     async readOne( idOrEmailOrUsername: string ): Promise<User>
     {
-        const foundUser = await this.findUserByIdOrEmailOrUsername( idOrEmailOrUsername )
-
-        if( !foundUser )
-            throw new NotFoundException()
-
-        return foundUser
+        return await this.findUser( idOrEmailOrUsername )
     }
 
 
@@ -60,21 +64,21 @@ export class UsersService
     {
         const orderBy = order.split( ',' ).map( str =>
         {
-            return { [ str.split( ':' )[ 0 ] ]: str.split( ':' )[ 1 ] }
+            const [ property, order ] = str.split( ':' )
+            return { [ property ]: order }
         } )
 
-        const where = filter?.split( ',' ).reduce( ( acc: any, current: string ) =>
+        const where = filter?.split( ',' ).reduce( ( whereAccumulator: any, filter: string ) =>
         {
-            if( !acc[ current.split( '.' )[ 0 ] ] )
-            {
-                acc[ current.split( '.' )[ 0 ] ] = {}
-            }
+            const [ property, operator, value ] = filter.split( '.' )
 
-            acc[ current.split( '.' )[ 0 ] ][ current.split( '.' )[ 1 ] ] = current.split( '.' )[ 2 ]
-            return acc
+            if( !whereAccumulator[ property ] )
+                whereAccumulator[ property ] = {}
+
+            whereAccumulator[ property ][ operator ] = value
+
+            return whereAccumulator
         }, {} )
-
-        console.log( orderBy, where )
 
         return await this.prisma.user.findMany( {
             take: perPage,
@@ -86,10 +90,7 @@ export class UsersService
 
     async update( idOrEmailOrUsername: string, data: Prisma.UserUpdateInput ): Promise<User>
     {
-        const foundUser = await this.findUserByIdOrEmailOrUsername( idOrEmailOrUsername )
-
-        if( !foundUser )
-            throw new NotFoundException()
+        const foundUser = await this.findUser( idOrEmailOrUsername )
 
         return await this.prisma.user.update( {
             where: {
@@ -101,10 +102,7 @@ export class UsersService
 
     async updatePassword( idOrEmailOrUsername: string, password: string ): Promise<User>
     {
-        const foundUser = await this.findUserByIdOrEmailOrUsername( idOrEmailOrUsername )
-
-        if( !foundUser )
-            throw new NotFoundException()
+        const foundUser = await this.findUser( idOrEmailOrUsername )
 
         return await this.prisma.user.update( {
             where: {
@@ -118,10 +116,7 @@ export class UsersService
 
     async delete( idOrEmailOrUsername: string ): Promise<User>
     {
-        const foundUser = await this.findUserByIdOrEmailOrUsername( idOrEmailOrUsername )
-
-        if( !foundUser )
-            throw new NotFoundException()
+        const foundUser = await this.findUser( idOrEmailOrUsername )
 
         return await this.prisma.user.delete( {
             where: {
