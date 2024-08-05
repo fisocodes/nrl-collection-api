@@ -33,6 +33,17 @@ Clone the project.
 git clone https://github.com/fisocodes/nrl-collection-api.git
 ```
 
+Set environment variables for.
+
+* DATABASE_URL (the current dbms is SQLite)
+* NANO_ID_ALPHABET (a string of the desired caracters to be included in IDs)
+* SMTP_HOST
+* SMTP_PORT
+* SMTP_USER
+* SMTP_PASS
+
+Note: You can use [Ethereal Email](https://ethereal.email/) for testing porpuses.
+
 Install the dependencies.
 
 ```bash
@@ -43,6 +54,12 @@ Generate Prisma client
 
 ```bash
 npx prisma generate
+```
+
+Install nestjs/cli globally
+
+```bash
+npm i -g @nestjs/cli
 ```
 
 Run tests
