@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { Prisma, User } from '@prisma/client'
-import { hash } from 'bcrypt'
+import { hash } from 'bcryptjs'
 import { NanoIdService } from '../nanoid.service'
 
 @Injectable()
